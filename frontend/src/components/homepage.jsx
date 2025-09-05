@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './homepage.css';  // Import the CSS file
+import './styles/homepage.css';  // Import the CSS file
+import { useAuthStore } from '../store/auth.store';
 
 const Homepage = () => {
   const navigate = useNavigate();
+  const { roomCode, clearRoom } = useAuthStore();
 
   const handleCreateRoom = () => {
     navigate('/create-room');
@@ -11,6 +13,14 @@ const Homepage = () => {
 
   const handleJoinRoom = () => {
     navigate('/join-room');
+  };
+
+  const handleViewRoom = () => {
+    navigate('/get-room');
+  };
+
+  const handleLeaveRoom = () => {
+    clearRoom();
   };
 
   return (
@@ -29,18 +39,36 @@ const Homepage = () => {
 
         {/* Action Buttons */}
         <div className="d-flex justify-content-center gap-4 flex-wrap">
-          <button
-            className=" btn-game-warning"
-            onClick={handleCreateRoom}
-           style={{backgroundColor:'yellow'}}>
-            Create Room
-          </button>
-          <button
-            className=" btn-game-success"
-            onClick={handleJoinRoom}
-           style={{backgroundColor:'lightgreen'}}>
-            Join Room
-          </button>
+          {roomCode ? (
+            <>
+              <button
+                className="btn-game-success"
+                onClick={handleViewRoom}
+                style={{backgroundColor:'lightgreen'}}>
+                View Room ({roomCode})
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={handleLeaveRoom}>
+                Leave Room
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className=" btn-game-warning"
+                onClick={handleCreateRoom}
+               style={{backgroundColor:'yellow'}}>
+                Create Room
+              </button>
+              <button
+                className=" btn-game-success"
+                onClick={handleJoinRoom}
+               style={{backgroundColor:'lightgreen'}}>
+                Join Room
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

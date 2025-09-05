@@ -1,9 +1,32 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './createroom.css';
+import './styles/createroom.css';
+import { useAuthStore } from '../store/auth.store';
+import toast from 'react-hot-toast';
+import{useState,useEffect} from 'react';
 
 const CreateRoom = () => {
   const navigate = useNavigate();
+  const { createRoom, roomCode } = useAuthStore();
+  const [numberOfRounds, setNumberOfRounds] = useState();
+  const [name , setName] = useState("");
+
+
+
+  const handleCreateRoom = async (e) => {
+    e.preventDefault();
+    if (!name || !numberOfRounds) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      await createRoom({ name, numberOfRounds });
+      navigate('/get-room');
+    } catch (error) {
+      // Error is handled in the store
+    }
+  };
 
   const handleJoinRoom = () => {
     navigate('/join-room');
@@ -20,7 +43,7 @@ const CreateRoom = () => {
 
         {/* Form */}
         <div className="d-flex justify-content-center mb-5">
-          <form className="p-5 form-bg">
+          <form className="p-5 form-bg" onSubmit={handleCreateRoom}>
             <h2 className="text-center text-success mb-4 fs-2 fw-bold">Create Room</h2>
 
             {/* Name Input */}
@@ -28,7 +51,10 @@ const CreateRoom = () => {
               <label htmlFor="Name" className="form-label fw-semibold text-light fs-5 mb-3">
                 Player Name:
               </label>
-              <input type="text" id="Name" className="form-control game-input" placeholder="Enter your name" />
+              <input type="text" id="Name" className="form-control game-input" placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              />
             </div>
 
             {/* Round Input */}
@@ -36,7 +62,10 @@ const CreateRoom = () => {
               <label htmlFor="Round" className="form-label fw-semibold text-light fs-5 mb-3">
                 Number of Rounds:
               </label>
-              <input type="number" id="Round" className="form-control game-input" placeholder="Number of rounds" min="1" max="20" />
+              <input type="number" id="Round" className="form-control game-input" placeholder="Number of rounds" min="1" max="20"
+              value={numberOfRounds}
+              onChange={(e) => setNumberOfRounds(e.target.value)}
+              />
             </div>
 
             {/* Create Room Button */}
@@ -49,7 +78,7 @@ const CreateRoom = () => {
         {/* Room Code */}
         <div className="text-center mb-5">
           <div className="text-warning d-inline-block room-code">
-            Room Code: XYZ123
+            {roomCode && <p className="fs-4 fw-bold">Room Code: {roomCode}</p>}
           </div>
         </div>
 

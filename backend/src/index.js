@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.route.js';
 import { setupSocketHandlers } from './lib/socketHandlers.js';
 import { setSocketIO } from './controller/auth.controller.js';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -13,10 +14,17 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
     methods: ["GET", "POST"]
   }
 });
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use('/api', authRoutes);
