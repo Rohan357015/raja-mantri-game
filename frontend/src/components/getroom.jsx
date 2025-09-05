@@ -73,7 +73,7 @@ const GetRoom = () => {
   }
 
   const isHost = user?.isHost;
-  const canStartGame = isHost && room.players.length >= 2 && room.status === 'waiting';
+  const canStartGame = isHost && room.players.length >= 4 && room.status === 'waiting';
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center game-container">

@@ -8,20 +8,20 @@ import{useState,useEffect} from 'react';
 const CreateRoom = () => {
   const navigate = useNavigate();
   const { createRoom, roomCode } = useAuthStore();
-  const [numberOfRounds, setNumberOfRounds] = useState();
+  const [round, setRound] = useState();
   const [name , setName] = useState("");
 
 
 
   const handleCreateRoom = async (e) => {
     e.preventDefault();
-    if (!name || !numberOfRounds) {
+    if (!name || !round) {
       toast.error("Please fill in all fields");
       return;
     }
 
     try {
-      await createRoom({ name, numberOfRounds });
+      await createRoom({ name, round: parseInt(round) });
       navigate('/get-room');
     } catch (error) {
       // Error is handled in the store
@@ -63,8 +63,8 @@ const CreateRoom = () => {
                 Number of Rounds:
               </label>
               <input type="number" id="Round" className="form-control game-input" placeholder="Number of rounds" min="1" max="20"
-              value={numberOfRounds}
-              onChange={(e) => setNumberOfRounds(e.target.value)}
+              value={round}
+              onChange={(e) => setRound(e.target.value)}
               />
             </div>
 
