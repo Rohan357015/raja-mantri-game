@@ -30,13 +30,13 @@ const Homepage = () => {
         {/* Action Buttons */}
         <div className="d-flex justify-content-center gap-4 flex-wrap">
           <button
-            className="btn btn-game-warning"
+            className=" btn-game-warning"
             onClick={handleCreateRoom}
            style={{backgroundColor:'yellow'}}>
             Create Room
           </button>
           <button
-            className="btn btn-game-success"
+            className=" btn-game-success"
             onClick={handleJoinRoom}
            style={{backgroundColor:'lightgreen'}}>
             Join Room

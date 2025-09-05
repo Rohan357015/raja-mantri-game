@@ -51,7 +51,7 @@ const JoinRoom = () => {
 
             {/* Join Room Button */}
             <div className="text-center">
-              <button type="submit" className="btn btn-game-success">
+              <button type="submit" className=" btn-game-success">
                 Join Room
               </button>
             </div>
@@ -61,7 +61,7 @@ const JoinRoom = () => {
         {/* Create Room Section */}
         <div className="text-center">
           <p className="fw-semibold section-divider">Want to create a new room?</p>
-          <button className="btn btn-game-warning" onClick={handleCreateRoom}>
+          <button className=" btn-game-warning" onClick={handleCreateRoom}>
             Create Room
           </button>
         </div>
