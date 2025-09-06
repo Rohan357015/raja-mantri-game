@@ -75,12 +75,7 @@ const CreateRoom = () => {
           </form>
         </div>
 
-        {/* Room Code */}
-        <div className="text-center mb-5">
-          <div className="text-warning d-inline-block room-code">
-            {roomCode && <p className="fs-4 fw-bold">Room Code: {roomCode}</p>}
-          </div>
-        </div>
+       
 
         {/* Join Room Section */}
         <div className="text-center">
