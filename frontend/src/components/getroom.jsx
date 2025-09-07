@@ -25,9 +25,10 @@ const GetRoom = () => {
       setRefreshLoading(false);
     }
   };
-
+ 
   const handleStartGame = async () => {
     if (!roomCode || !user) return;
+    navigate('/start-game');
     
     try {
       await startGame(roomCode, user.user);

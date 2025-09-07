@@ -11,6 +11,7 @@ export const useAuthStore = create((set, get) => ({
   error: null,
   roomCode: null,
   room: null,
+  round: null, // <-- Add this line
 
   createRoom: async (roomData) => {
     set({ loading: true, error: null });
@@ -21,6 +22,7 @@ export const useAuthStore = create((set, get) => ({
         user: response.data.room.players[0],
         roomCode: response.data.room.roomCode,
         room: response.data.room,
+        round: response.data.room.round, // <-- Add this line
         loading: false
       });
       
@@ -72,6 +74,7 @@ export const useAuthStore = create((set, get) => ({
       set({
         room: response.data.room,
         roomCode: response.data.room.roomCode,
+        round: response.data.room.round, // <-- Add this line
         loading: false
       });
       
@@ -111,6 +114,17 @@ export const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
+  updateScores: async (roomCode, scores) => {
+  try {
+    const response = await axiosInstance.post(`/room/${roomCode}/update-scores`, { scores });
+    // Optionally update local state with response
+    set({ room: response.data.room });
+    return response.data.room;
+  } catch (error) {
+    toast.error("Failed to update scores");
+    throw error;
+  }
+},
 
   clearError: () => set({ error: null }),
   clearRoom: () => set({ room: null, roomCode: null, user: null })

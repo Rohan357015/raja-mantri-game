@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles/gamepage.css';
+import { useAuthStore } from '../store/auth.store';
+import { useNavigate } from 'react-router-dom';
 
 export const StartGame = () => {
   const [gameState, setGameState] = useState({
@@ -33,7 +35,42 @@ export const StartGame = () => {
       phase: 'role-assignment'
     }));
   };
+ // authentication store
+   const { room, roomCode, user, loading, getRoom, round, clearRoom, updateScores } = useAuthStore();
+ const navigate = useNavigate();
 
+   // ✅ Polling every 1 second
+  useEffect(() => {
+    if (!roomCode) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const latestRoom = await getRoom(roomCode); // fetch latest data from backend
+        if (latestRoom && latestRoom.gameState) {
+          setGameState(latestRoom.gameState); // overwrite with backend’s gameState
+        }
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval); // cleanup
+  }, [roomCode, getRoom]);
+ if (!room) {
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center game-container">
+        <div className="container-fluid px-4 py-5 text-center">
+          <h1 className="fw-bold mb-4 game-title">Room Not Found</h1>
+          <p className="mb-4">Unable to load room details.</p>
+          <button className="btn-game-warning" onClick={() => navigate('/')}>
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  
   // Start a new round
   const startRound = () => {
     const shuffledRoles = [...roles].sort(() => Math.random() - 0.5);
@@ -151,23 +188,28 @@ export const StartGame = () => {
 
   // Reset game
   const resetGame = () => {
-    setGameState({
-      phase: 'waiting',
-      currentRound: 1,
-      totalRounds: 5,
-      players: [
-        { id: 1, name: 'Player 1', role: null, points: 0, isHost: true },
-        { id: 2, name: 'Player 2', role: null, points: 0, isHost: false },
-        { id: 3, name: 'Player 3', role: null, points: 0, isHost: false },
-        { id: 4, name: 'Player 4', role: null, points: 0, isHost: false }
-      ],
-      cards: [],
-      sipahiGuess: null,
-      roundResults: [],
-      gameStarted: false
-    });
-    setSelectedPlayer(null);
-  };
+  // get latest players from room
+  const playersFromRoom = room?.players || [];
+
+  setGameState({
+    phase: 'waiting',
+    currentRound: 1,
+    totalRounds: round || 5,
+    players: playersFromRoom.map((p, index) => ({
+      id: p.id || index + 1,
+      name: p.name || `Player ${index + 1}`, // ✅ use actual name if exists
+      role: null,
+      points: 0,
+      isHost: index === 0 // first player is host
+    })),
+    cards: [],
+    sipahiGuess: null,
+    roundResults: [],
+    gameStarted: false
+  });
+  setSelectedPlayer(null);
+};
+
 
   const getRoleDisplayName = (role) => {
     const roleMap = {
